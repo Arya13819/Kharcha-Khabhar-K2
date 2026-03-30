@@ -568,5 +568,56 @@ def history():
 
 # PDF/CSV Logic remains similar, using get_db_connection() and get_cursor()
 
+@app.route('/setup-db')
+def setup_db():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        # SQL Commands to create your tables
+        sql_commands = """
+        CREATE TABLE IF NOT EXISTS users (
+            id SERIAL PRIMARY KEY,
+            first_name VARCHAR(50),
+            middle_name VARCHAR(50),
+            last_name VARCHAR(50),
+            email VARCHAR(100),
+            username VARCHAR(50) UNIQUE,
+            password VARCHAR(100),
+            gender VARCHAR(10),
+            contact VARCHAR(20),
+            security_key VARCHAR(50),
+            city VARCHAR(50)
+        );
+
+        CREATE TABLE IF NOT EXISTS expenses (
+            id SERIAL PRIMARY KEY,
+            username VARCHAR(50),
+            budget DECIMAL(10, 2),
+            date DATE,
+            payee VARCHAR(100),
+            transaction_type VARCHAR(20),
+            amount DECIMAL(10, 2),
+            payment_mode VARCHAR(50),
+            category VARCHAR(50)
+        );
+
+        CREATE TABLE IF NOT EXISTS login (
+            username VARCHAR(50) PRIMARY KEY,
+            email VARCHAR(100),
+            password VARCHAR(100),
+            last_login TIMESTAMP,
+            status VARCHAR(20)
+        );
+        """
+        cur.execute(sql_commands)
+        conn.commit()
+        cur.close()
+        conn.close()
+        return "Database tables created successfully! You can now register."
+    except Exception as e:
+        return f"Error creating tables: {str(e)}"
+
+
 if __name__ == '__main__':
     app.run(debug=True)
