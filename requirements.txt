@@ -4,3 +4,4 @@ flask-bcrypt
 mysql-connector-python
 gunicorn
 fpdf
+psycopg2-binary
