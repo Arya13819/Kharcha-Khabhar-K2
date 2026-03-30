@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}"> -->
+
+    <title>K2-Expense Tracker</title>
+</head>
+<body>
+    <header>
+        <div class="nav-left">
+            <a href="{{url_for('home')}}">Home</a>
+            <a href="{{url_for('history')}}">History</a>
+            <a href="{{url_for('expense')}}">Expense</a>
+            <a href="{{url_for('report')}}">Report</a>
+            <a href="{{url_for('balance')}}">Balance</a>
+        </div>
+            
+        <div class="nav-right">
+            {% if 'user' in session %}
+            <img src="../static/images/image.png" alt="profile-menu" id="profile-icon">
+            <div class="dropdown-content" id="dropdown-menu">
+                <a href="{{ url_for('tips') }}" target="_blank">Tips</a>
+                <a href="#">Change Password</a>
+                <a href="{{ url_for('logout') }}">Log Out</a>
+            </div>
+            {% else %}
+            <a href="{{ url_for('login') }}" class="btn">Login</a>
+            <!-- <a href="{{ url_for('login') }}"><button class="btn">Login</button></a> -->
+            <a href="{{ url_for('register') }}" class="btn">Sign Up</a>
+            {% endif %}
+            
+        </div>
+    </header>
+    <section class="img-slider">
+        <div class="slides">
+            <img src="../static/images/image1.jpeg" alt="budget planning">
+            <img src="../static/images/image2.png" alt="budget planning">
+            <img src="../static/images/image4.jpeg" alt="calculation">
+            <img src="../static/images/image5.jpeg" alt="Expense Reports">
+            <img src="../static/images/image6.webp" alt="Expense Report chart">
+            <img src="../static/images/image7.jpeg" alt="money bag">
+            <img src="../static/images/image8.jpg" alt="Expenses">
+        </div>
+    </section>
+  
+    <section class="info">
+        <img src="../static/images/k2.3a.jpg" alt="Logo">
+        <h1>Welcome to <b>K2</b></h1>
+        <p>Our Expense Tracker web app helps you easily manage finances and reduce financial stress.</p>
+    </section>
+
+    <section class="main-body">
+        <div class="form">
+            <h2>Track Your Expenses</h2>
+            <form action="/submit" method="POST" class="ex-form">
+
+                <label>Set Your Budget:</label>
+                <input type="number" name="budget" step="0.01" placeholder="ex: 1000">
+
+                <label>Date: <span class="required-star">*</span></label>
+                <input type="date" name="date" required>
+
+                <label>Payee: <span class="required-star">*</span></label>
+                <input type="text" name="payee" placeholder="ex: abc" required>
+                
+                <label>Transaction Type: <span class="required-star">*</span></label>
+                <select name="transaction_type" id="transaction_type" required>
+                    <option value="">Select option</option>
+                    <option value="Income">Income</option>
+                    <option value="Expense">Expense</option>
+                </select>
+
+                <label>Enter Amount: <span class="required-star">*</span></label>
+                <input type="number" name="amount" step="0.01" placeholder="ex: 100" required>
+
+                <label>Mode of Payment: <span class="required-star">*</span></label>  
+                <select name="payment_mode" required>
+                    <option value="">Select Payment Mode</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Debit Card">Debit Card</option>
+                    <option value="Online Transfer">Online Transfer</option>
+                </select>   
+                <label>Category: <span class="required-star">*</span></label>
+                <select name="category" required>
+                    <option value="">Select Category</option>
+                    <option value="Food">Food</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Cosmetics">Cosmetics</option>
+                    <option value="Others">Others</option>
+                </select>
+                <br><br>
+
+                <button type="submit">Enter</button>
+                <br><br>
+
+                <a href="{{ url_for('balance') }}">
+                    <button type="button">Check Your Balance</button>
+            </a>
+            </form>
+        </div>
+    </section>
+</body>
+<!-- <script src="../static/app.js"></script> -->
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+
+
+</html>

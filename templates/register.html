@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js" crossorigin="anonymous"></script>
+    <title>Register</title>
+</head>
+<body class="register-body">
+    <div class="form">
+        <h1>Welcome to K2!</h1>
+        <p>Enter your details to create an account</p>
+        <p>All fields marked with <span class="required-star">*</span> are mandatory</p>
+
+        <form action="/register" method="POST" class="ex-form">
+            <label for="fname">First Name: <span class="required-star">*</span></label>
+            <input type="text" name="first_name" id="fname" placeholder="Ex: John" required>
+
+            <label for="mName">Middle Name:</label>
+            <input type="text" name="middle_name" id="mName" placeholder="Ex: Smith">
+
+            <label for="lname">Last Name: <span class="required-star">*</span></label>
+            <input type="text" name="last_name" id="lname" placeholder="Ex: Doe" required>
+
+            <label for="email">Email: <span class="required-star">*</span></label>
+            <input type="email" name="email" id="email" placeholder="Ex: john123@gmail.com" required>
+
+            <label for="username">Username: <span class="required-star">*</span></label>
+            <input type="text" name="username" id="username" placeholder="Ex: JohnDoe" required>
+
+            <label for="password">Password: <span class="required-star">*</span></label>
+            <div class="input-container">
+                <input type="password" name="password" id="password" placeholder="Password" required>
+                <i class="fa-solid fa-eye eye-icon" id="toggleEye" onclick="togglePassword()"></i>
+            </div>
+
+            <label for="gender">Gender: <span class="required-star">*</span></label>
+            <select name="gender" id="gender">
+                <option>Select Gender</option>
+                <option value="m">Male</option>
+                <option value="f">Female</option>
+                <option value="o">Other</option>
+            </select>
+
+            <label for="contact">Contact Number: <span class="required-star">*</span></label>
+            <input type="text" name="contact" id="contact" placeholder="Ex: 1234567890" required pattern="[0-9]{10}">
+
+            <label for="key">Security Key: <span class="required-star">*</span></label>
+            <input type="password" name="security_key" id="key" placeholder="key" maxlength="8" required>
+
+            <label for="city">City: <span class="required-star">*</span></label>
+            <input type="text" name="city" id="city" placeholder="Ex: Mumbai" required>
+            <br><br>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</html>

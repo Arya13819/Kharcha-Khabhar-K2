@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balance Summary</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+<header>
+    <div class="nav-left">
+            <a href="{{url_for('home')}}">Home</a>
+            <a href="{{url_for('history')}}">History</a>
+            <a href="{{url_for('expense')}}">Expense</a>
+            <a href="{{url_for('report')}}">Report</a>
+            <a href="{{url_for('balance')}}">Balance</a>
+        </div>
+    <div class="nav-right">
+        {% if 'user' in session %}
+        <img src="../static/images/image.png" alt="profile-menu" id="profile-icon">
+        <div class="dropdown-content" id="dropdown-menu">
+            <a href="{{ url_for('tips') }}" target="_blank">Tips</a>
+            <a href="#">Change Password</a>
+            <a href="{{ url_for('logout') }}">Log Out</a>
+        </div>
+        {% else %}
+        <a href="{{ url_for('login') }}" class="btn">Login</a>
+        <a href="{{ url_for('register') }}" class="btn">Sign Up</a>
+        {% endif %}
+    </div>
+</header>
+
+<section class="balance-section">
+    <div class="balance-card">
+        <h2>Balance Summary</h2>
+        <p><strong>Total Budget:</strong> ₹ {{ budget }}</p>
+        <p><strong>Total Income:</strong> ₹ {{ income }}</p>
+        <p><strong>Total Expense:</strong> ₹ {{ expense }}</p>
+        <hr>
+        <h3>Remaining Balance: ₹ {{ balance }}</h3>
+        <a href="{{ url_for('home') }}" class="btn-back">Back to Home</a>
+    </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <title>Expense Report</title>
+</head>
+<body>
+    <header>
+        <div class="nav-left">
+            <a href="{{url_for('home')}}">Home</a>
+            <a href="{{url_for('history')}}">History</a>
+            <a href="{{url_for('expense')}}">Expense</a>
+            <a href="{{url_for('report')}}">Report</a>
+            <a href="{{url_for('balance')}}">Balance</a>
+        </div>
+            
+        <div class="nav-right">
+            <img src="../static/images/image.png" alt="profile-menu" id="profile-icon">
+                <div class="dropdown-content" id="dropdown-menu">
+                    <a href="{{ url_for('tips') }}" target="_blank">Tips</a>
+                    <a href="#">Change Password</a>
+                    <a href="{{ url_for('logout') }}">Log Out</a>
+                </div>
+        </div>
+    </header>
+
+    <div class="ex-history">
+        <form method="POST" action="/expense">
+            <label for="category">Select Category:</label>
+            <select name="category" id="category" required>
+                <option value="">-- Select Category --</option>
+                <option value="Food">Food</option>
+                <option value="Transport">Transport</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Cosmetics">Cosmetics</option>
+                <option value="Others">Others</option>
+            </select>
+            <button type="submit">View</button>
+        </form>
+    </div>
+
+    <div class="content">
+        {% if expenses %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Payee</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Mode</th>
+                    <th>Category</th>
+                    <th>Budget</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td>{{ expense.date }}</td>
+                    <td>{{ expense.payee }}</td>
+                    <td>{{ expense.transaction_type }}</td>
+                    <td>{{ expense.amount }}</td>
+                    <td>{{ expense.payment_mode }}</td>
+                    <td>{{ expense.category }}</td>
+                    <td>{{ expense.budget }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% elif category_selected %}
+        <p>No expenses found for category <strong>{{ category_selected }}</strong>.</p>
+        {% endif %}
+    </div>
+        
+</body>
+<script src="../static/app.js"></script>
+</html>

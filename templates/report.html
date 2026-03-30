@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <title>Report</title>
+</head>
+<body>
+    <header>
+        <div class="nav-left">
+            <a href="{{url_for('home')}}">Home</a>
+            <a href="{{url_for('history')}}">History</a>
+            <a href="{{url_for('expense')}}">Expense</a>
+            <a href="{{url_for('report')}}">Report</a>
+            <a href="{{url_for('balance')}}">Balance</a>
+        </div>
+            
+        <div class="nav-right">
+            <img src="../static/images/image.png" alt="profile-menu" id="profile-icon">
+                <div class="dropdown-content" id="dropdown-menu">
+                    <a href="{{ url_for('tips') }}" target="_blank">Tips</a>
+                    <a href="#">Change Password</a>
+                    <a href="{{ url_for('logout') }}">Log Out</a>
+                </div>
+        </div>
+    </header>
+
+    <div class="report">
+        <h1>Report</h1>
+        <form action="/report" method="post" class="report-form">
+            <label for="report-type">Report Type:</label>
+            <select name="t" id="report-type">
+                <option>Select option</option>
+                <option value="m">Monthly</option>
+                <option value="w">Weekly</option>
+                <option value="c">Custom Date Range</option> 
+            </select>
+            <br>
+
+            <label>Select Date Range:</label>
+            <label for="start-date">Start From:</label>
+            <input type="date" id="start-date" name="start-date">
+
+            <label for="end-date">End From:</label>
+            <input type="date" id="end-date" name="end-date">
+
+            <label for="gen">Generate Report:</label>
+            <button type="submit" name="action" value="csv">CSV</button>
+            <button type="submit" name="action" value="pdf" id="pdf">PDF</button>
+        </form>
+</body>
+<script src="../static/app.js"></script>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js" crossorigin="anonymous"></script>
+    <title>Login</title>
+</head>
+<body class="login-body">
+    <div class="form">
+        <h1>Welcome back to K2!</h1>
+        <p>We're so excited to see you again!</p>
+            {% if error %}
+            <p style="color: red;">{{ error }}</p>
+            {% endif %}
+        <form action="/login" method="POST" class="ex-form" >
+            <label for="username">Username: <span class="required-star">*</span></label>
+            <input type="text" name="username" id="username" placeholder="Ex: John" required>
+
+            <label for="password">Password: <span class="required-star">*</span></label>
+            <div class="input-container">
+                <input type="password" name="password" id="password" max="8" placeholder="Password" required>
+                <i class="fa-solid fa-eye eye-icon" id="toggleEye"  onclick="togglePassword()"></i>
+            </div>
+
+            <p> <a href="#">Forget your password?</a></p>
+            <p id="signup-button">Don't have an account? <a href="/register">Sign Up</a></p>
+            <br><br>
+            <!-- <a href="index.html"><button type="submit">Log In</button></a> -->
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+<script src="../static/app.js"></script>
+</html>
