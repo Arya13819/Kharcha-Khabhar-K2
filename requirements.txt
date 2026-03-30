@@ -3,3 +3,4 @@ flask-cors
 flask-bcrypt
 mysql-connector-python
 gunicorn
+fpdf
