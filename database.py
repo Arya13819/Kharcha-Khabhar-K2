@@ -1,69 +1,98 @@
-# import mysql.connector
+"""
+Database layer for K2 Expense Tracker.
 
-# def get_db_connection():
-#     try:
-#         conn = mysql.connector.connect(
-#             host="localhost",
-#             user="root",   # Replace with your MySQL username
-#             password="MYSQL@Secure!123",  # Replace with your MySQL password
-#             database="user_db"  # Replace with your database name
-#         )
-#         return conn
-#     except mysql.connector.Error as err:
-#         print(f"Error: {err}")
-#         return None
+Works with TWO databases automatically:
+  - On Render (cloud):  PostgreSQL  -> detected via the DATABASE_URL env variable
+  - On your PC (local): MySQL       -> used when DATABASE_URL is not set
 
-
-
-# import os
-# import mysql.connector
-# import psycopg2  # For PostgreSQL on Render
-# from urllib.parse import urlparse
-
-# def get_db_connection():
-#     # This looks for the variable you just added in your screenshot
-#     db_url = os.environ.get('DATABASE_URL')
-
-#     if db_url:
-#         # If on Render, connect to PostgreSQL
-#         return psycopg2.connect(db_url)
-#     else:
-#         # If on your PC (D: drive), connect to your local MySQL
-#         return mysql.connector.connect(
-#             host="localhost",
-#             user="root",
-#             password="MYSQL@Secure!123",
-#             database="user_db"
-#         )
-
+No passwords are hardcoded here. Locally, set the MYSQL_PASSWORD
+environment variable before running the app.
+"""
 
 import os
-import mysql.connector
-import psycopg2
-from psycopg2.extras import RealDictCursor
+
+# True when running on Render (or anywhere DATABASE_URL is set)
+IS_POSTGRES = bool(os.environ.get("DATABASE_URL"))
+
 
 def get_db_connection():
-    # Detects the Render Environment Variable
-    db_url = os.environ.get('DATABASE_URL')
-
-    if db_url:
-        # Cloud Connection (PostgreSQL)
-        conn = psycopg2.connect(db_url)
-        return conn
+    """Return a database connection for the current environment."""
+    if IS_POSTGRES:
+        import psycopg2
+        return psycopg2.connect(os.environ["DATABASE_URL"])
     else:
-        # Local Connection (MySQL)
+        import mysql.connector
         return mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="MYSQL@Secure!123",  # Your local password
-            database="user_db" 
+            host=os.environ.get("MYSQL_HOST", "localhost"),
+            user=os.environ.get("MYSQL_USER", "root"),
+            password=os.environ.get("MYSQL_PASSWORD", ""),
+            database=os.environ.get("MYSQL_DB", "user_db"),
         )
 
+
 def get_cursor(conn):
-    """Helper to get a dictionary-style cursor for both DB types"""
-    if os.environ.get('DATABASE_URL'):
-        # PostgreSQL uses RealDictCursor for dict-like results
+    """Return a dictionary-style cursor (rows behave like dicts) for both DBs."""
+    if IS_POSTGRES:
+        from psycopg2.extras import RealDictCursor
         return conn.cursor(cursor_factory=RealDictCursor)
     else:
-        # MySQL uses dictionary=True
         return conn.cursor(dictionary=True)
+
+
+def month_expr(column="date"):
+    """SQL expression that formats a date as 'YYYY-MM' in either dialect."""
+    if IS_POSTGRES:
+        return f"TO_CHAR({column}, 'YYYY-MM')"
+    else:
+        return f"DATE_FORMAT({column}, '%Y-%m')"
+
+
+# ---------------------------------------------------------------------------
+# Table creation (used by the one-time /setup-db route on Render)
+# ---------------------------------------------------------------------------
+
+POSTGRES_SCHEMA = """
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    middle_name VARCHAR(100),
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    gender VARCHAR(20) NOT NULL,
+    contact VARCHAR(20) NOT NULL,
+    security_key VARCHAR(255) NOT NULL,
+    city VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS expenses (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) NOT NULL REFERENCES users(username) ON DELETE CASCADE,
+    budget DECIMAL(10,2),
+    date DATE NOT NULL,
+    payee VARCHAR(100) NOT NULL,
+    transaction_type VARCHAR(20) NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    payment_mode VARCHAR(50) NOT NULL,
+    category VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS login (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(255),
+    last_login TIMESTAMP,
+    status VARCHAR(20)
+);
+"""
+
+
+def create_tables():
+    """Create all tables (PostgreSQL). Safe to run more than once."""
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(POSTGRES_SCHEMA)
+    conn.commit()
+    cur.close()
+    conn.close()

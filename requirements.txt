@@ -1,7 +1,6 @@
 Flask
-flask-cors
 flask-bcrypt
 mysql-connector-python
+psycopg2-binary
 gunicorn
 fpdf
-psycopg2-binary

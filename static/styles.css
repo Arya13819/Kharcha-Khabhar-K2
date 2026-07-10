@@ -565,3 +565,115 @@ tr:nth-child(even) {
     background: #155ab6;
     transform: translateY(-2px);
 }
+
+
+/* ================= Dashboard page ================= */
+.dashboard {
+    padding: 30px 20px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+.dashboard h1 {
+    text-align: center;
+    color: var(--Rosewood);
+    margin-bottom: 30px;
+}
+
+.summary-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.summary-card {
+    flex: 1 1 200px;
+    max-width: 240px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    border-top: 5px solid var(--Princeton_orange);
+}
+
+.summary-card p {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.summary-card h2 {
+    font-size: 26px;
+    color: var(--Rich_black);
+}
+
+.income-card { border-top-color: var(--Selective_yellow); }
+.expense-card { border-top-color: var(--Engineering_orange); }
+.balance-card-mini { border-top-color: var(--Persimmon); }
+.count-card { border-top-color: var(--Rosewood); }
+
+.charts-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+}
+
+.chart-box {
+    flex: 1 1 400px;
+    max-width: 500px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.chart-box h3 {
+    text-align: center;
+    color: var(--Rosewood);
+    margin-bottom: 15px;
+}
+
+.chart-empty {
+    text-align: center;
+    color: #888;
+    padding: 40px 10px;
+}
+
+/* ================= History actions ================= */
+.actions-cell {
+    white-space: nowrap;
+}
+
+.actions-cell form {
+    display: inline;
+}
+
+.action-btn {
+    display: inline-block;
+    padding: 6px 14px;
+    margin: 2px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.edit-btn {
+    background-color: var(--Orange_web);
+    color: var(--Chocolate_cosmos);
+}
+
+.edit-btn:hover { background-color: var(--Princeton_orange); }
+
+.delete-btn {
+    background-color: var(--Engineering_orange);
+    color: white;
+}
+
+.delete-btn:hover { background-color: var(--Penn_red); }

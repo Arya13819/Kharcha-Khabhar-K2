@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js" crossorigin="anonymous"></script>
     <title>Login</title>
@@ -25,7 +25,7 @@
                 <i class="fa-solid fa-eye eye-icon" id="toggleEye"  onclick="togglePassword()"></i>
             </div>
 
-            <p> <a href="#">Forget your password?</a></p>
+            <p> <a href="{{ url_for('forgot_password') }}">Forgot your password?</a></p>
             <p id="signup-button">Don't have an account? <a href="/register">Sign Up</a></p>
             <br><br>
             <!-- <a href="index.html"><button type="submit">Log In</button></a> -->
@@ -33,5 +33,5 @@
         </form>
     </div>
 </body>
-<script src="../static/app.js"></script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
 </html>

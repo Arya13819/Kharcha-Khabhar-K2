@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Dashboard | K2</title>
+</head>
+<body>
+    <header>
+        <div class="nav-left">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('history') }}">History</a>
+            <a href="{{ url_for('expense') }}">Expense</a>
+            <a href="{{ url_for('report') }}">Report</a>
+            <a href="{{ url_for('balance') }}">Balance</a>
+        </div>
+        <div class="nav-right">
+            <img src="{{ url_for('static', filename='images/image.png') }}" alt="profile-menu" id="profile-icon">
+            <div class="dropdown-content" id="dropdown-menu">
+                <a href="{{ url_for('tips') }}" target="_blank">Tips</a>
+                <a href="{{ url_for('forgot_password') }}">Change Password</a>
+                <a href="{{ url_for('logout') }}">Log Out</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="dashboard">
+        <h1>Your Financial Dashboard</h1>
+
+        <div class="summary-cards">
+            <div class="summary-card income-card">
+                <p>Total Income</p>
+                <h2 id="sum-income">--</h2>
+            </div>
+            <div class="summary-card expense-card">
+                <p>Total Expense</p>
+                <h2 id="sum-expense">--</h2>
+            </div>
+            <div class="summary-card balance-card-mini">
+                <p>Net Balance</p>
+                <h2 id="sum-balance">--</h2>
+            </div>
+            <div class="summary-card count-card">
+                <p>Transactions</p>
+                <h2 id="sum-count">--</h2>
+            </div>
+        </div>
+
+        <div class="charts-row">
+            <div class="chart-box">
+                <h3>Spending by Category</h3>
+                <canvas id="categoryChart"></canvas>
+                <p class="chart-empty" id="category-empty" hidden>No expenses yet. Add some transactions to see this chart.</p>
+            </div>
+            <div class="chart-box">
+                <h3>Monthly Income vs Expense</h3>
+                <canvas id="monthlyChart"></canvas>
+                <p class="chart-empty" id="monthly-empty" hidden>No transactions yet. Add some to see your monthly trend.</p>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        const res = await fetch("/api/chart-data");
+        if (!res.ok) return;
+        const data = await res.json();
+
+        const fmt = n => "\u20B9" + n.toLocaleString("en-IN", { maximumFractionDigits: 2 });
+        document.getElementById("sum-income").textContent = fmt(data.summary.income);
+        document.getElementById("sum-expense").textContent = fmt(data.summary.expense);
+        document.getElementById("sum-balance").textContent = fmt(data.summary.balance);
+        document.getElementById("sum-count").textContent = data.summary.count;
+
+        // K2 palette
+        const palette = ["#D00000", "#E85D04", "#F48C06", "#FFBA08", "#6A040F", "#9D0208"];
+
+        if (data.categories.labels.length) {
+            new Chart(document.getElementById("categoryChart"), {
+                type: "doughnut",
+                data: {
+                    labels: data.categories.labels,
+                    datasets: [{
+                        data: data.categories.values,
+                        backgroundColor: palette,
+                        borderColor: "#03071E",
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    plugins: { legend: { position: "bottom" } }
+                }
+            });
+        } else {
+            document.getElementById("categoryChart").hidden = true;
+            document.getElementById("category-empty").hidden = false;
+        }
+
+        if (data.monthly.labels.length) {
+            new Chart(document.getElementById("monthlyChart"), {
+                type: "bar",
+                data: {
+                    labels: data.monthly.labels,
+                    datasets: [
+                        {
+                            label: "Income",
+                            data: data.monthly.income,
+                            backgroundColor: "#FFBA08"
+                        },
+                        {
+                            label: "Expense",
+                            data: data.monthly.expense,
+                            backgroundColor: "#D00000"
+                        }
+                    ]
+                },
+                options: {
+                    plugins: { legend: { position: "bottom" } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        } else {
+            document.getElementById("monthlyChart").hidden = true;
+            document.getElementById("monthly-empty").hidden = false;
+        }
+    });
+    </script>
+</body>
+</html>

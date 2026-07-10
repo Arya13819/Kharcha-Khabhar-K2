@@ -3,6 +3,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const profileIcon = document.getElementById("profile-icon");
     const dropdown = document.getElementById("dropdown-menu");
+    if (!profileIcon || !dropdown) return;
 
     profileIcon.addEventListener("click", function (event) {
         dropdown.classList.toggle("show"); // Toggle class to show/hide
@@ -21,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // for image transition 
 document.addEventListener("DOMContentLoaded", function () {
     const slides = document.querySelector(".slides");
+    if (!slides) return;
     const images = slides.querySelectorAll("img");
     const totalImages = images.length;
     
@@ -145,6 +147,30 @@ document.addEventListener("DOMContentLoaded", function () {
         removeQueryParam("submitted");
     }
 
+    if (params.has("updated") && params.get("updated") === "true") {
+        alert("Transaction updated!");
+        removeQueryParam("updated");
+    }
+
+    if (params.has("deleted") && params.get("deleted") === "true") {
+        alert("Transaction deleted!");
+        removeQueryParam("deleted");
+    }
+
+    if (params.has("reset")) {
+        if (params.get("reset") === "success") {
+            alert("Password reset successfully! Please log in.");
+        } else if (params.get("reset") === "failed") {
+            alert("Username or security key is incorrect.");
+        }
+        removeQueryParam("reset");
+    }
+
+    if (params.has("register") && params.get("register") === "failed") {
+        alert("Registration failed. Username or email may already exist.");
+        removeQueryParam("register");
+    }
+
     function removeQueryParam(param) {
         const url = new URL(window.location.href);
         url.searchParams.delete(param);
@@ -153,6 +179,9 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-document.getElementById("check-balance-btn").addEventListener("click", function () {
-    window.location.href = "/balance";
-});
+const checkBalanceBtn = document.getElementById("check-balance-btn");
+if (checkBalanceBtn) {
+    checkBalanceBtn.addEventListener("click", function () {
+        window.location.href = "/balance";
+    });
+}

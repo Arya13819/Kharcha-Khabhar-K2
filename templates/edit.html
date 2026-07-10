@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Edit Transaction | K2</title>
+</head>
+<body>
+    <header>
+        <div class="nav-left">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('history') }}">History</a>
+            <a href="{{ url_for('expense') }}">Expense</a>
+            <a href="{{ url_for('report') }}">Report</a>
+            <a href="{{ url_for('balance') }}">Balance</a>
+        </div>
+        <div class="nav-right">
+            <img src="{{ url_for('static', filename='images/image.png') }}" alt="profile-menu" id="profile-icon">
+            <div class="dropdown-content" id="dropdown-menu">
+                <a href="{{ url_for('tips') }}" target="_blank">Tips</a>
+                <a href="{{ url_for('forgot_password') }}">Change Password</a>
+                <a href="{{ url_for('logout') }}">Log Out</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="main-body">
+        <div class="form">
+            <h2>Edit Transaction</h2>
+            <form action="/edit/{{ expense.id }}" method="POST" class="ex-form">
+
+                <label>Budget:</label>
+                <input type="number" name="budget" step="0.01"
+                       value="{{ expense.budget if expense.budget is not none else '' }}">
+
+                <label>Date: <span class="required-star">*</span></label>
+                <input type="date" name="date" value="{{ expense.date }}" required>
+
+                <label>Payee: <span class="required-star">*</span></label>
+                <input type="text" name="payee" value="{{ expense.payee }}" required>
+
+                <label>Transaction Type: <span class="required-star">*</span></label>
+                <select name="transaction_type" required>
+                    <option value="Income" {% if expense.transaction_type == 'Income' %}selected{% endif %}>Income</option>
+                    <option value="Expense" {% if expense.transaction_type == 'Expense' %}selected{% endif %}>Expense</option>
+                </select>
+
+                <label>Amount: <span class="required-star">*</span></label>
+                <input type="number" name="amount" step="0.01" value="{{ expense.amount }}" required>
+
+                <label>Mode of Payment: <span class="required-star">*</span></label>
+                <select name="payment_mode" required>
+                    {% for mode in ['Cash', 'Credit Card', 'Debit Card', 'Online Transfer'] %}
+                    <option value="{{ mode }}" {% if expense.payment_mode == mode %}selected{% endif %}>{{ mode }}</option>
+                    {% endfor %}
+                </select>
+
+                <label>Category: <span class="required-star">*</span></label>
+                <select name="category" required>
+                    {% for cat in ['Food', 'Transport', 'Shopping', 'Cosmetics', 'Others'] %}
+                    <option value="{{ cat }}" {% if expense.category == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+                <br><br>
+
+                <button type="submit">Save Changes</button>
+                <br>
+                <a href="{{ url_for('history') }}"><button type="button">Cancel</button></a>
+            </form>
+        </div>
+    </section>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
