@@ -677,3 +677,205 @@ tr:nth-child(even) {
 }
 
 .delete-btn:hover { background-color: var(--Penn_red); }
+
+
+/* ============================================================
+   MOBILE RESPONSIVE (v1.1)
+   Desktop design untouched; these rules apply only on
+   smaller screens via media queries.
+   ============================================================ */
+
+/* --- Tablets and small laptops --- */
+@media (max-width: 900px) {
+
+    /* Header: allow wrapping, keep everything centered, nothing cut off */
+    header {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px;
+        padding: 10px 6px;
+    }
+
+    .nav-left {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .nav-left a, .nav-right a {
+        white-space: nowrap;   /* "Sign Up" never breaks into two lines */
+        margin: 2px 6px;
+    }
+
+    .nav-right {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Slider: exactly two images per screen on tablets */
+    .img-slider { width: 100%; }
+    .slides { width: max-content; }
+    .slides img {
+        width: 50vw;
+        height: 200px;
+    }
+
+    .info h1 { font-size: 44px; }
+
+    .info img {
+        float: none;
+        display: block;
+        margin: 0 auto 15px auto;
+        width: 200px;
+    }
+
+    .charts-row { gap: 20px; }
+
+    .chart-box {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+}
+
+/* --- Phones --- */
+@media (max-width: 600px) {
+
+    /* Header: wrap nav neatly, tighter spacing */
+    header {
+        flex-wrap: wrap;
+        padding: 8px;
+        gap: 4px;
+    }
+
+    .nav-left {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 2px;
+    }
+
+    .nav-left a, .nav-right a {
+        margin: 2px 4px;
+        font-size: 13px;
+        padding: 6px 4px;
+        letter-spacing: 0.5px;
+    }
+
+    /* Disable the jumpy hover font-size change on touch */
+    .nav-left a:hover { font-size: 13px; }
+
+    .nav-right {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2px;
+    }
+
+    .nav-right img {
+        width: 26px;
+        height: 26px;
+        margin-left: 8px;
+        padding-right: 8px;
+    }
+
+    .dropdown-content { top: auto; }
+
+    /* Home page: each slide fills the screen width exactly */
+    .img-slider { width: 100%; }
+    .slides { width: max-content; }
+    .slides img {
+        width: 100vw;
+        height: 160px;
+    }
+
+    .info h1 { font-size: 32px; padding-top: 15px; }
+    .info p  { font-size: 16px; padding: 15px 10px 0 10px; }
+    .info img { width: 150px; margin: 0 auto 12px auto; }
+
+    /* Forms (home, login, register, edit, forgot) */
+    .form { margin-top: 15px; padding-bottom: 30px; }
+    .form h1 { font-size: 30px; padding: 15px 10px 0 10px; }
+    .form h2 { font-size: 26px; margin: 10px; padding: 10px; }
+    .form p  { font-size: 15px; padding: 5px 12px; }
+
+    .ex-form {
+        max-width: 100%;
+        padding: 0 16px;
+    }
+
+    .ex-form input, .ex-form select {
+        box-sizing: border-box;
+        font-size: 16px; /* prevents iPhone auto-zoom on focus */
+    }
+
+    .ex-form button { width: 100%; margin-left: 0; margin-right: 0; }
+
+    /* History page: let it grow + scrollable table */
+    .container { height: auto; min-height: 80vh; }
+
+    .history { padding: 5px; }
+    .history h3 {
+        font-size: 15px;
+        padding: 8px 4px;
+        border-right-width: 2px;
+    }
+    .history h3:hover { font-size: 15px; }
+
+    .content {
+        margin-top: 20px;
+        width: 100%;
+        overflow-x: auto;          /* table scrolls sideways instead of breaking */
+        -webkit-overflow-scrolling: touch;
+        align-items: flex-start;
+        padding: 0 8px;
+        box-sizing: border-box;
+    }
+
+    table { width: 100%; min-width: 640px; }
+
+    th, td {
+        font-size: 13px;
+        padding: 8px 6px;
+    }
+
+    .action-btn {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 3px 0;
+        padding: 6px 8px;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    /* Report + Expense pages */
+    .report h1 { font-size: 34px; }
+    .report-form, .ex-history form { padding: 0 16px; box-sizing: border-box; }
+    .report-form input, .report-form select,
+    .ex-history form select { box-sizing: border-box; font-size: 16px; }
+    .ex-history { padding: 15px 5px; margin: 10px 0; }
+
+    /* Balance page */
+    .balance-section { padding: 25px 12px; }
+    .balance-card { padding: 25px 20px; }
+
+    /* Dashboard */
+    .dashboard { padding: 20px 12px; }
+    .dashboard h1 { font-size: 26px; margin-bottom: 20px; }
+
+    .summary-cards { gap: 12px; }
+
+    .summary-card {
+        flex: 1 1 40%;
+        max-width: none;
+        padding: 14px 8px;
+    }
+
+    .summary-card h2 { font-size: 19px; }
+    .summary-card p  { font-size: 13px; }
+
+    .chart-box { padding: 15px 10px; }
+    .chart-box h3 { font-size: 17px; }
+}
