@@ -2,7 +2,7 @@
 
 A full-stack personal finance web app to track income, expenses, and budgets. Log transactions, visualize spending with interactive charts, filter history, and export reports as CSV or PDF.
 
-**Live demo:** [add your Render URL here after deployment]
+**Live demo:** [https://kharcha-khabhar-k2.onrender.com]
 
 ## Features
 
