@@ -519,10 +519,38 @@ def chart_data():
     )
     summary = cursor.fetchone()
 
+    # Budget status: latest budget vs this month's spending
+    cursor.execute(
+        """
+        SELECT budget FROM expenses
+        WHERE username = %s AND budget IS NOT NULL
+        ORDER BY id DESC LIMIT 1
+        """,
+        (username,),
+    )
+    brow = cursor.fetchone()
+    budget_amt = float(brow["budget"]) if brow else 0.0
+
+    cursor.execute(
+        f"""
+        SELECT COALESCE(SUM(amount), 0) AS spent
+        FROM expenses
+        WHERE username = %s AND transaction_type = 'Expense'
+          AND {m} = %s
+        """,
+        (username, date.today().strftime("%Y-%m")),
+    )
+    spent_this_month = float(cursor.fetchone()["spent"])
+
     cursor.close()
     conn.close()
 
     return jsonify({
+        "budget_status": {
+            "budget": budget_amt,
+            "spent": spent_this_month,
+            "percent": round(spent_this_month / budget_amt * 100, 1) if budget_amt > 0 else None,
+        },
         "categories": {
             "labels": [r["category"] for r in cat_rows],
             "values": [float(r["total"]) for r in cat_rows],

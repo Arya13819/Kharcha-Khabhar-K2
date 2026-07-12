@@ -32,6 +32,8 @@
 
         <div id="due-reminders"></div>
 
+        <div id="budget-status"></div>
+
         <div class="summary-cards">
             <div class="summary-card income-card">
                 <p>Total Income</p>
@@ -101,6 +103,33 @@
         const data = await res.json();
 
         const fmt = n => "\u20B9" + n.toLocaleString("en-IN", { maximumFractionDigits: 2 });
+
+        // ---- Budget alerts (v1.3) ----
+        const bs = data.budget_status;
+        if (bs && bs.budget > 0) {
+            const pct = bs.percent;
+            const box = document.getElementById("budget-status");
+            let cls = "budget-ok", msg = "You're within budget this month.";
+            if (pct >= 100) {
+                cls = "budget-over";
+                msg = "\u26A0\uFE0F Budget exceeded by " + fmt(bs.spent - bs.budget) + " this month!";
+            } else if (pct >= 80) {
+                cls = "budget-warn";
+                msg = "\u26A0\uFE0F Careful \u2014 you've used " + pct + "% of your monthly budget.";
+            }
+            box.innerHTML =
+                "<div class='budget-card " + cls + "'>" +
+                "<div class='budget-head'>" +
+                "<span>Monthly Budget</span>" +
+                "<span>" + fmt(bs.spent) + " of " + fmt(bs.budget) + " (" + pct + "%)</span>" +
+                "</div>" +
+                "<div class='budget-track'>" +
+                "<div class='budget-fill' style='width:" + Math.min(pct, 100) + "%'></div>" +
+                "</div>" +
+                "<p class='budget-msg'>" + msg + "</p>" +
+                "</div>";
+        }
+
         document.getElementById("sum-income").textContent = fmt(data.summary.income);
         document.getElementById("sum-expense").textContent = fmt(data.summary.expense);
         document.getElementById("sum-balance").textContent = fmt(data.summary.balance);

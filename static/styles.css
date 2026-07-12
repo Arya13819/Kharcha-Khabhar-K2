@@ -1040,3 +1040,55 @@ tr:nth-child(even) {
     .reminder-card { flex-direction: column; align-items: stretch; text-align: center; }
     .reminder-btn { width: 100%; }
 }
+
+
+/* ================= Budget alerts (v1.3) ================= */
+#budget-status { max-width: 800px; margin: 0 auto 30px auto; }
+
+.budget-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+    border-left: 6px solid #1a8a2e;
+}
+
+.budget-card.budget-warn { border-left-color: var(--Selective_yellow); }
+.budget-card.budget-over { border-left-color: var(--Engineering_orange); }
+
+.budget-head {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-weight: bold;
+    color: var(--Rich_black);
+    margin-bottom: 10px;
+}
+
+.budget-track {
+    width: 100%;
+    height: 14px;
+    background: #eee;
+    border-radius: 7px;
+    overflow: hidden;
+}
+
+.budget-fill {
+    height: 100%;
+    border-radius: 7px;
+    background: #1a8a2e;
+    transition: width 0.6s ease;
+}
+
+.budget-warn .budget-fill { background: var(--Selective_yellow); }
+.budget-over .budget-fill { background: var(--Engineering_orange); }
+
+.budget-msg {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.budget-warn .budget-msg { color: #8a6d00; font-weight: bold; }
+.budget-over .budget-msg { color: var(--Penn_red); font-weight: bold; }
