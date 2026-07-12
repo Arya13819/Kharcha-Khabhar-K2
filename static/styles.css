@@ -879,3 +879,164 @@ tr:nth-child(even) {
     .chart-box { padding: 15px 10px; }
     .chart-box h3 { font-size: 17px; }
 }
+
+
+/* ================= Recurring transactions (v1.2) ================= */
+.recurring-page {
+    padding: 30px 20px;
+    max-width: 1150px;
+    margin: auto;
+}
+
+.recurring-page h1 {
+    text-align: center;
+    color: var(--Rosewood);
+    margin-bottom: 8px;
+}
+
+.recurring-sub {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.recurring-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.recurring-form-box {
+    flex: 1 1 320px;
+    max-width: 400px;
+    background: var(--Rich_black);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.recurring-form-box h2 {
+    color: var(--Princeton_orange);
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.rec-form { display: flex; flex-direction: column; }
+
+.rec-form label {
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    margin-top: 12px;
+    text-align: left;
+}
+
+.rec-form input, .rec-form select {
+    padding: 9px;
+    margin-top: 6px;
+    border: 1px solid var(--Persimmon);
+    box-sizing: border-box;
+    width: 100%;
+    font-size: 16px;
+}
+
+.rec-form button {
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--Rosewood);
+    background-color: var(--Orange_web);
+    border: none;
+    cursor: pointer;
+}
+
+.rec-form button:hover { background: #ff9800; color: black; }
+
+.recurring-list-box {
+    flex: 2 1 420px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.recurring-list-box h2 {
+    color: var(--Rosewood);
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.rules-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+.recurring-list-box table { width: 100%; min-width: 620px; box-shadow: none; }
+.recurring-list-box th, .recurring-list-box td { font-size: 14px; padding: 9px 6px; }
+
+.no-rules { text-align: center; color: #888; padding: 30px 10px; }
+
+.due-badge {
+    background: var(--Engineering_orange);
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-left: 6px;
+    white-space: nowrap;
+}
+
+.status-active { color: #1a8a2e; font-weight: bold; }
+.status-paused { color: #999; font-weight: bold; }
+
+/* Dashboard reminder cards */
+.reminder-title {
+    color: var(--Penn_red);
+    margin-bottom: 12px;
+}
+
+#due-reminders { max-width: 800px; margin: 0 auto 30px auto; }
+
+.reminder-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    background: #FFF6E5;
+    border-left: 6px solid var(--Selective_yellow);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.reminder-info { font-size: 15px; color: var(--Rich_black); }
+
+.reminder-date {
+    display: block;
+    font-size: 13px;
+    color: #8a6d00;
+    margin-top: 3px;
+}
+
+.reminder-btn {
+    background: var(--Engineering_orange);
+    color: white;
+    border: none;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 9px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.reminder-btn:hover { background: var(--Penn_red); }
+
+@media (max-width: 600px) {
+    .recurring-page { padding: 20px 12px; }
+    .recurring-form-box, .recurring-list-box { padding: 16px 12px; }
+    .reminder-card { flex-direction: column; align-items: stretch; text-align: center; }
+    .reminder-btn { width: 100%; }
+}

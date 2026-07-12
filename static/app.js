@@ -147,6 +147,21 @@ document.addEventListener("DOMContentLoaded", function () {
         removeQueryParam("submitted");
     }
 
+    if (params.has("recurring_added") && params.get("recurring_added") === "true") {
+        alert("Recurring transaction added to your history!");
+        removeQueryParam("recurring_added");
+    }
+
+    if (params.has("saved") && params.get("saved") === "true") {
+        alert("Recurring rule saved!");
+        removeQueryParam("saved");
+    }
+
+    if (params.has("deleted_rule") && params.get("deleted_rule") === "true") {
+        alert("Recurring rule deleted.");
+        removeQueryParam("deleted_rule");
+    }
+
     if (params.has("updated") && params.get("updated") === "true") {
         alert("Transaction updated!");
         removeQueryParam("updated");

@@ -85,6 +85,19 @@ CREATE TABLE IF NOT EXISTS login (
     last_login TIMESTAMP,
     status VARCHAR(20)
 );
+
+CREATE TABLE IF NOT EXISTS recurring_expenses (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) NOT NULL REFERENCES users(username) ON DELETE CASCADE,
+    payee VARCHAR(100) NOT NULL,
+    transaction_type VARCHAR(20) NOT NULL DEFAULT 'Expense',
+    amount DECIMAL(10,2) NOT NULL,
+    payment_mode VARCHAR(50) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    frequency VARCHAR(20) NOT NULL,
+    next_due DATE NOT NULL,
+    active BOOLEAN DEFAULT TRUE
+);
 """
 
 

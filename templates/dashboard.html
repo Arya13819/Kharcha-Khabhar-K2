@@ -12,6 +12,7 @@
             <a href="{{ url_for('home') }}">Home</a>
             <a href="{{ url_for('dashboard') }}">Dashboard</a>
             <a href="{{ url_for('history') }}">History</a>
+            <a href="{{ url_for('recurring.recurring') }}">Recurring</a>
             <a href="{{ url_for('expense') }}">Expense</a>
             <a href="{{ url_for('report') }}">Report</a>
             <a href="{{ url_for('balance') }}">Balance</a>
@@ -28,6 +29,8 @@
 
     <section class="dashboard">
         <h1>Your Financial Dashboard</h1>
+
+        <div id="due-reminders"></div>
 
         <div class="summary-cards">
             <div class="summary-card income-card">
@@ -66,6 +69,33 @@
     <script src="{{ url_for('static', filename='app.js') }}"></script>
     <script>
     document.addEventListener("DOMContentLoaded", async function () {
+        // ---- Due recurring reminders ----
+        try {
+            const dueRes = await fetch("/api/due-recurring");
+            if (dueRes.ok) {
+                const dueData = await dueRes.json();
+                if (dueData.due && dueData.due.length) {
+                    const box = document.getElementById("due-reminders");
+                    const fmtDue = n => "\u20B9" + n.toLocaleString("en-IN", { maximumFractionDigits: 2 });
+                    box.innerHTML = "<h3 class='reminder-title'>\u23F0 Due Recurring Transactions</h3>";
+                    dueData.due.forEach(function (r) {
+                        const card = document.createElement("div");
+                        card.className = "reminder-card";
+                        card.innerHTML =
+                            "<div class='reminder-info'>" +
+                            "<strong>" + r.payee + "</strong> \u2014 " + fmtDue(r.amount) +
+                            " (" + r.transaction_type + ", " + r.frequency + ")" +
+                            "<span class='reminder-date'>Due: " + r.next_due + "</span>" +
+                            "</div>" +
+                            "<form method='POST' action='/recurring/confirm/" + r.id + "'>" +
+                            "<button type='submit' class='reminder-btn'>Add now</button>" +
+                            "</form>";
+                        box.appendChild(card);
+                    });
+                }
+            }
+        } catch (e) { /* reminders are optional; never block the dashboard */ }
+
         const res = await fetch("/api/chart-data");
         if (!res.ok) return;
         const data = await res.json();

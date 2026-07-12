@@ -21,9 +21,11 @@ from fpdf import FPDF
 from database import (
     get_db_connection, get_cursor, month_expr, create_tables, IS_POSTGRES
 )
+from recurring import recurring_bp
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
+app.register_blueprint(recurring_bp)
 
 # Secret key comes from the environment in production (never hardcode it).
 app.secret_key = os.environ.get("SECRET_KEY", "dev-only-key-change-me")
