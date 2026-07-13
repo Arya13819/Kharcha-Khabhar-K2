@@ -30,7 +30,7 @@ app.register_blueprint(recurring_bp)
 # Secret key comes from the environment in production (never hardcode it).
 app.secret_key = os.environ.get("SECRET_KEY", "dev-only-key-change-me")
 
-CATEGORIES = ["Food", "Transport", "Shopping", "Cosmetics", "Others"]
+CATEGORIES = ["Food", "Groceries", "Transport", "Shopping", "Bills & Recharge", "Rent/Housing", "Health", "Entertainment", "Education", "Cosmetics", "Others"]
 
 
 # ---------------------------------------------------------------------------
