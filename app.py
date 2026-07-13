@@ -59,6 +59,32 @@ def login_required():
     return "user" not in session
 
 
+def get_month_budget(conn, username, month_str):
+    """Budget for the given 'YYYY-MM' from the budgets table.
+    Falls back to the legacy per-transaction budget for older accounts."""
+    cur = get_cursor(conn)
+    cur.execute(
+        "SELECT amount FROM budgets WHERE username = %s AND month = %s",
+        (username, month_str),
+    )
+    row = cur.fetchone()
+    if row:
+        cur.close()
+        return float(row["amount"])
+    # Legacy fallback: latest budget value stored inside expenses
+    cur.execute(
+        """
+        SELECT budget FROM expenses
+        WHERE username = %s AND budget IS NOT NULL
+        ORDER BY id DESC LIMIT 1
+        """,
+        (username,),
+    )
+    row = cur.fetchone()
+    cur.close()
+    return float(row["budget"]) if row else 0.0
+
+
 # ---------------------------------------------------------------------------
 # Pages
 # ---------------------------------------------------------------------------
@@ -75,7 +101,6 @@ def submit():
 
     username = session["user"]
 
-    budget = request.form.get("budget")
     expense_date = request.form.get("date")
     payee = request.form.get("payee")
     transaction_type = request.form.get("transaction_type")
@@ -84,7 +109,6 @@ def submit():
     category = request.form.get("category")
 
     try:
-        budget = float(budget) if budget not in (None, "") else None
         amount = float(amount)
     except (TypeError, ValueError):
         return redirect(url_for("home", error="amount_required"))
@@ -95,10 +119,10 @@ def submit():
         cursor.execute(
             """
             INSERT INTO expenses
-            (username, budget, date, payee, transaction_type, amount, payment_mode, category)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            (username, date, payee, transaction_type, amount, payment_mode, category)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
             """,
-            (username, budget, expense_date, payee,
+            (username, expense_date, payee,
              transaction_type, amount, payment_mode, category),
         )
         conn.commit()
@@ -123,16 +147,7 @@ def balance():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute(
-        """
-        SELECT budget FROM expenses
-        WHERE username = %s AND budget IS NOT NULL
-        ORDER BY id DESC LIMIT 1
-        """,
-        (username,),
-    )
-    row = cursor.fetchone()
-    budget = float(row[0]) if row else 0
+    budget = get_month_budget(conn, username, date.today().strftime("%Y-%m"))
 
     cursor.execute(
         """
@@ -387,7 +402,7 @@ def history():
     cursor.execute(
         f"""
         SELECT id, date, payee, transaction_type, amount,
-               payment_mode, category, budget
+               payment_mode, category
         FROM expenses
         WHERE {where_sql}
         ORDER BY date DESC, id DESC
@@ -420,8 +435,6 @@ def edit_expense(expense_id):
     if request.method == "POST":
         try:
             amount = float(request.form.get("amount"))
-            budget = request.form.get("budget")
-            budget = float(budget) if budget not in (None, "") else None
         except (TypeError, ValueError):
             conn.close()
             return redirect(url_for("history", updated="failed"))
@@ -431,13 +444,13 @@ def edit_expense(expense_id):
             """
             UPDATE expenses
             SET date = %s, payee = %s, transaction_type = %s, amount = %s,
-                payment_mode = %s, category = %s, budget = %s
+                payment_mode = %s, category = %s
             WHERE id = %s AND username = %s
             """,
             (request.form.get("date"), request.form.get("payee"),
              request.form.get("transaction_type"), amount,
              request.form.get("payment_mode"), request.form.get("category"),
-             budget, expense_id, username),
+             expense_id, username),
         )
         conn.commit()
         cur.close()
@@ -512,6 +525,46 @@ def expense():
 # Dashboard + chart data API
 # ---------------------------------------------------------------------------
 
+@app.route("/budget/set", methods=["POST"])
+def set_budget():
+    if login_required():
+        return redirect(url_for("home", auth="required"))
+
+    month = request.form.get("month", "").strip() or date.today().strftime("%Y-%m")
+    try:
+        amount = float(request.form.get("amount"))
+        if amount < 0:
+            raise ValueError
+    except (TypeError, ValueError):
+        return redirect(url_for("dashboard", budget_saved="failed"))
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    if IS_POSTGRES:
+        cur.execute(
+            """
+            INSERT INTO budgets (username, month, amount)
+            VALUES (%s, %s, %s)
+            ON CONFLICT (username, month)
+            DO UPDATE SET amount = EXCLUDED.amount
+            """,
+            (session["user"], month, amount),
+        )
+    else:
+        cur.execute(
+            """
+            INSERT INTO budgets (username, month, amount)
+            VALUES (%s, %s, %s)
+            ON DUPLICATE KEY UPDATE amount = VALUES(amount)
+            """,
+            (session["user"], month, amount),
+        )
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect(url_for("dashboard", budget_saved="true"))
+
+
 @app.route("/dashboard")
 def dashboard():
     if login_required():
@@ -575,17 +628,8 @@ def chart_data():
     )
     summary = cursor.fetchone()
 
-    # Budget status: latest budget vs this month's spending
-    cursor.execute(
-        """
-        SELECT budget FROM expenses
-        WHERE username = %s AND budget IS NOT NULL
-        ORDER BY id DESC LIMIT 1
-        """,
-        (username,),
-    )
-    brow = cursor.fetchone()
-    budget_amt = float(brow["budget"]) if brow else 0.0
+    # Budget status: this month's budget vs this month's spending
+    budget_amt = get_month_budget(conn, username, date.today().strftime("%Y-%m"))
 
     cursor.execute(
         f"""

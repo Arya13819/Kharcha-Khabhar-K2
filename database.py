@@ -86,6 +86,14 @@ CREATE TABLE IF NOT EXISTS login (
     status VARCHAR(20)
 );
 
+CREATE TABLE IF NOT EXISTS budgets (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) NOT NULL REFERENCES users(username) ON DELETE CASCADE,
+    month VARCHAR(7) NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    UNIQUE (username, month)
+);
+
 CREATE TABLE IF NOT EXISTS recurring_expenses (
     id SERIAL PRIMARY KEY,
     username VARCHAR(100) NOT NULL REFERENCES users(username) ON DELETE CASCADE,

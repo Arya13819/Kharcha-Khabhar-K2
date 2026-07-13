@@ -32,10 +32,6 @@
             <h2>Edit Transaction</h2>
             <form action="/edit/{{ expense.id }}" method="POST" class="ex-form">
 
-                <label>Budget:</label>
-                <input type="number" name="budget" step="0.01"
-                       value="{{ expense.budget if expense.budget is not none else '' }}">
-
                 <label>Date: <span class="required-star">*</span></label>
                 <input type="date" name="date" value="{{ expense.date }}" required>
 

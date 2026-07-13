@@ -147,6 +147,15 @@ document.addEventListener("DOMContentLoaded", function () {
         removeQueryParam("submitted");
     }
 
+    if (params.has("budget_saved")) {
+        if (params.get("budget_saved") === "true") {
+            alert("Monthly budget saved!");
+        } else {
+            alert("Please enter a valid budget amount.");
+        }
+        removeQueryParam("budget_saved");
+    }
+
     if (params.has("recurring_added") && params.get("recurring_added") === "true") {
         alert("Recurring transaction added to your history!");
         removeQueryParam("recurring_added");

@@ -1202,3 +1202,46 @@ a.tab.active {
     .filter-bar input[type="text"] { min-width: 0; width: 100%; box-sizing: border-box; }
     .filter-bar select, .filter-bar button { width: 100%; box-sizing: border-box; }
 }
+
+
+/* ================= Monthly budget form (v1.6) ================= */
+.budget-set-box { max-width: 800px; margin: 0 auto 30px auto; }
+
+.budget-set-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 18px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.budget-set-form label { color: var(--Rich_black); font-size: 15px; }
+
+.budget-set-form input[type="number"] {
+    padding: 9px 12px;
+    border: 2px solid var(--Chocolate_cosmos);
+    font-size: 15px;
+    width: 150px;
+}
+
+.budget-set-form button {
+    padding: 9px 20px;
+    background: var(--Chocolate_cosmos);
+    color: var(--Orange_web);
+    font-weight: bold;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.budget-set-form button:hover { background: var(--Penn_red); color: white; }
+
+@media (max-width: 600px) {
+    .budget-set-form input[type="number"],
+    .budget-set-form button { width: 100%; box-sizing: border-box; }
+}
