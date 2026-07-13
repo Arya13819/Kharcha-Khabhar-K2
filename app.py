@@ -335,22 +335,78 @@ def history():
     if login_required():
         return redirect(url_for("home", auth="required"))
 
+    username = session["user"]
+    PER_PAGE = 20
+
+    # --- Filters from query string ---
+    q = request.args.get("q", "").strip()
+    month = request.args.get("month", "").strip()
+    category = request.args.get("category", "").strip()
+    ttype = request.args.get("type", "").strip()
+    try:
+        page = max(int(request.args.get("page", 1)), 1)
+    except (TypeError, ValueError):
+        page = 1
+
+    where = ["username = %s"]
+    params = [username]
+    if q:
+        where.append("LOWER(payee) LIKE %s")
+        params.append(f"%{q.lower()}%")
+    if month:
+        where.append(f"{month_expr('date')} = %s")
+        params.append(month)
+    if category in CATEGORIES:
+        where.append("category = %s")
+        params.append(category)
+    if ttype in ("Income", "Expense"):
+        where.append("transaction_type = %s")
+        params.append(ttype)
+    where_sql = " AND ".join(where)
+
     conn = get_db_connection()
     cursor = get_cursor(conn)
+
+    # Months that actually have data (for the dropdown)
     cursor.execute(
-        """
+        f"SELECT DISTINCT {month_expr('date')} AS m FROM expenses "
+        "WHERE username = %s ORDER BY m DESC",
+        (username,),
+    )
+    months = [r["m"] for r in cursor.fetchall()]
+
+    # Total matching rows -> page count
+    cursor.execute(
+        f"SELECT COUNT(*) AS cnt FROM expenses WHERE {where_sql}",
+        tuple(params),
+    )
+    total = int(cursor.fetchone()["cnt"])
+    total_pages = max(1, -(-total // PER_PAGE))  # ceil division
+    page = min(page, total_pages)
+
+    cursor.execute(
+        f"""
         SELECT id, date, payee, transaction_type, amount,
                payment_mode, category, budget
         FROM expenses
-        WHERE username = %s
+        WHERE {where_sql}
         ORDER BY date DESC, id DESC
+        LIMIT %s OFFSET %s
         """,
-        (session["user"],),
+        tuple(params) + (PER_PAGE, (page - 1) * PER_PAGE),
     )
     expenses = cursor.fetchall()
     cursor.close()
     conn.close()
-    return render_template("history.html", expenses=expenses)
+
+    return render_template(
+        "history.html",
+        expenses=expenses,
+        months=months,
+        categories=CATEGORIES,
+        q=q, month=month, category=category, ttype=ttype,
+        page=page, total_pages=total_pages, total=total,
+    )
 
 
 @app.route("/edit/<int:expense_id>", methods=["GET", "POST"])

@@ -28,54 +28,102 @@
         </div>
     </header>
 
-    <div class="container">
-        <div class="main-content">
-            <div class="history">
-                <h3 class="tab active" onclick="filterExpenses('All')">All</h3>
-                <h3 class="tab" onclick="filterExpenses('Income')">Income</h3>
-                <h3 class="tab" onclick="filterExpenses('Expense')">Expense</h3>
-            </div>
-            <div class="content">
-                {% if expenses %}
-                    <table id="expenseTable">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Payee</th>
-                                <th>Type</th>
-                                <th>Amount</th>
-                                <th>Mode</th>
-                                <th>Category</th>
-                                <th>Budget</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for expense in expenses %}
-                            <tr data-type="{{ expense.transaction_type }}">
-                                <td>{{ expense.date }}</td>
-                                <td>{{ expense.payee }}</td>
-                                <td>{{ expense.transaction_type }}</td>
-                                <td>{{ expense.amount }}</td>
-                                <td>{{ expense.payment_mode }}</td>
-                                <td>{{ expense.category }}</td>
-                                <td>{{ expense.budget if expense.budget is not none else '-' }}</td>
-                                <td class="actions-cell">
-                                    <a href="{{ url_for('edit_expense', expense_id=expense.id) }}" class="action-btn edit-btn">Edit</a>
-                                    <form action="{{ url_for('delete_expense', expense_id=expense.id) }}" method="POST"
-                                          onsubmit="return confirm('Delete this transaction?');">
-                                        <button type="submit" class="action-btn delete-btn">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                {% else %}
-                    <p>No transactions yet. Add your first one from the Home page.</p>
-                {% endif %}
-            </div>
+    <div class="history-page">
+        <!-- Type tabs (server-side, combinable with other filters) -->
+        <div class="history">
+            <a class="tab {{ 'active' if not ttype }}"
+               href="{{ url_for('history', q=q, month=month, category=category) }}">All</a>
+            <a class="tab {{ 'active' if ttype == 'Income' }}"
+               href="{{ url_for('history', q=q, month=month, category=category, type='Income') }}">Income</a>
+            <a class="tab {{ 'active' if ttype == 'Expense' }}"
+               href="{{ url_for('history', q=q, month=month, category=category, type='Expense') }}">Expense</a>
         </div>
+
+        <!-- Search + filters -->
+        <form class="filter-bar" method="GET" action="{{ url_for('history') }}">
+            {% if ttype %}<input type="hidden" name="type" value="{{ ttype }}">{% endif %}
+            <input type="text" name="q" value="{{ q }}" placeholder="Search payee (ex: Zomato)">
+            <select name="month">
+                <option value="">All months</option>
+                {% for m in months %}
+                <option value="{{ m }}" {{ 'selected' if m == month }}>{{ m }}</option>
+                {% endfor %}
+            </select>
+            <select name="category">
+                <option value="">All categories</option>
+                {% for c in categories %}
+                <option value="{{ c }}" {{ 'selected' if c == category }}>{{ c }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Apply</button>
+            {% if q or month or category or ttype %}
+            <a class="clear-link" href="{{ url_for('history') }}">Clear all</a>
+            {% endif %}
+        </form>
+
+        <p class="result-count">
+            {{ total }} transaction{{ 's' if total != 1 }} found
+            {% if total_pages > 1 %} &middot; page {{ page }} of {{ total_pages }}{% endif %}
+        </p>
+
+        <div class="content">
+            {% if expenses %}
+                <table id="expenseTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Payee</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Mode</th>
+                            <th>Category</th>
+                            <th>Budget</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for expense in expenses %}
+                        <tr>
+                            <td>{{ expense.date }}</td>
+                            <td>{{ expense.payee }}</td>
+                            <td>{{ expense.transaction_type }}</td>
+                            <td>{{ expense.amount }}</td>
+                            <td>{{ expense.payment_mode }}</td>
+                            <td>{{ expense.category }}</td>
+                            <td>{{ expense.budget if expense.budget is not none else '-' }}</td>
+                            <td class="actions-cell">
+                                <a href="{{ url_for('edit_expense', expense_id=expense.id) }}" class="action-btn edit-btn">Edit</a>
+                                <form action="{{ url_for('delete_expense', expense_id=expense.id) }}" method="POST"
+                                      onsubmit="return confirm('Delete this transaction?');">
+                                    <button type="submit" class="action-btn delete-btn">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="no-results">
+                    {% if q or month or category or ttype %}
+                    No transactions match these filters. <a href="{{ url_for('history') }}">Clear filters</a>
+                    {% else %}
+                    No transactions yet. Add your first one from the Home page.
+                    {% endif %}
+                </p>
+            {% endif %}
+        </div>
+
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% if page > 1 %}
+            <a class="page-btn" href="{{ url_for('history', q=q, month=month, category=category, type=ttype or None, page=page-1) }}">&laquo; Previous</a>
+            {% endif %}
+            <span class="page-info">Page {{ page }} of {{ total_pages }}</span>
+            {% if page < total_pages %}
+            <a class="page-btn" href="{{ url_for('history', q=q, month=month, category=category, type=ttype or None, page=page+1) }}">Next &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
     <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>

@@ -53,7 +53,7 @@
 
                 <label>Mode of Payment: <span class="required-star">*</span></label>
                 <select name="payment_mode" required>
-                    {% for mode in ['Cash', 'Credit Card', 'Debit Card', 'Online Transfer'] %}
+                    {% for mode in ['Cash', 'Credit Card', 'Debit Card', 'Online Transfer', 'UPI'] %}
                     <option value="{{ mode }}" {% if expense.payment_mode == mode %}selected{% endif %}>{{ mode }}</option>
                     {% endfor %}
                 </select>

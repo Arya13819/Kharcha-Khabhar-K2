@@ -15,3 +15,5 @@ CREATE TABLE IF NOT EXISTS recurring_expenses (
     CONSTRAINT fk_recurring_user FOREIGN KEY (username)
         REFERENCES users(username) ON DELETE CASCADE
 );
+USE user_db;
+SHOW TABLES;

@@ -1092,3 +1092,113 @@ tr:nth-child(even) {
 
 .budget-warn .budget-msg { color: #8a6d00; font-weight: bold; }
 .budget-over .budget-msg { color: var(--Penn_red); font-weight: bold; }
+
+
+/* ================= History upgrade (v1.4) ================= */
+.history-page { padding-bottom: 40px; }
+
+/* Tabs are now links */
+a.tab {
+    display: block;
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+    color: var(--Chocolate_cosmos);
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px;
+    border-right: 4px solid var(--Chocolate_cosmos);
+}
+
+a.tab:last-child { border-right: none; }
+
+a.tab.active {
+    background-color: var(--Chocolate_cosmos);
+    color: var(--Orange_web);
+}
+
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    padding: 18px 15px 5px 15px;
+}
+
+.filter-bar input[type="text"] {
+    padding: 9px 12px;
+    border: 2px solid var(--Chocolate_cosmos);
+    min-width: 220px;
+    font-size: 15px;
+}
+
+.filter-bar select {
+    padding: 9px;
+    border: 2px solid var(--Chocolate_cosmos);
+    font-size: 15px;
+    background: white;
+}
+
+.filter-bar button {
+    padding: 9px 22px;
+    background: var(--Chocolate_cosmos);
+    color: var(--Orange_web);
+    font-weight: bold;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+}
+
+.filter-bar button:hover { background: var(--Penn_red); color: white; }
+
+.clear-link {
+    color: var(--Penn_red);
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.result-count {
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+    padding: 8px 0 0 0;
+}
+
+.history-page .content {
+    height: auto;
+    margin-top: 15px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.no-results { text-align: center; color: #888; padding: 40px 10px; }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 22px 10px;
+}
+
+.page-btn {
+    background: var(--Chocolate_cosmos);
+    color: var(--Orange_web);
+    text-decoration: none;
+    font-weight: bold;
+    padding: 8px 18px;
+    border-radius: 6px;
+}
+
+.page-btn:hover { background: var(--Penn_red); color: white; }
+
+.page-info { color: #555; font-weight: bold; }
+
+@media (max-width: 600px) {
+    a.tab { font-size: 15px; padding: 8px 4px; border-right-width: 2px; }
+    .filter-bar input[type="text"] { min-width: 0; width: 100%; box-sizing: border-box; }
+    .filter-bar select, .filter-bar button { width: 100%; box-sizing: border-box; }
+}
