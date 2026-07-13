@@ -60,7 +60,7 @@
 
                 <label>Category: <span class="required-star">*</span></label>
                 <select name="category" required>
-                    {% for cat in ['Food', 'Transport', 'Shopping', 'Cosmetics', 'Others'] %}
+                    {% for cat in ['Food', 'Groceries', 'Transport', 'Shopping', 'Bills & Recharge', 'Rent/Housing', 'Health', 'Entertainment', 'Education', 'Cosmetics', 'Others'] %}
                     <option value="{{ cat }}" {% if expense.category == cat %}selected{% endif %}>{{ cat }}</option>
                     {% endfor %}
                 </select>
