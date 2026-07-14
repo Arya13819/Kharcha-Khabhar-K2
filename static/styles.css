@@ -1245,3 +1245,68 @@ a.tab.active {
     .budget-set-form input[type="number"],
     .budget-set-form button { width: 100%; box-sizing: border-box; }
 }
+
+
+/* ================= Report polish (v1.8) ================= */
+.generate-btn {
+    padding: 10px 26px;
+    background: var(--Chocolate_cosmos);
+    color: var(--Orange_web);
+    font-weight: bold;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.generate-btn:hover { background: var(--Penn_red); color: white; }
+
+.report-results {
+    max-width: 950px;
+    margin: 25px auto 50px auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.report-results h2 { color: var(--Rosewood); text-align: center; margin-bottom: 18px; }
+.report-results h3 { color: var(--Rosewood); margin: 22px 0 10px 0; }
+
+.report-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.report-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.report-table-wrap table { width: 100%; min-width: 480px; box-shadow: none; }
+.report-table-wrap th, .report-table-wrap td { font-size: 14px; padding: 8px 6px; }
+.report-cat-table { max-width: 420px; min-width: 0 !important; }
+
+.report-downloads { text-align: center; margin-top: 25px; }
+
+.report-downloads button {
+    padding: 10px 22px;
+    margin: 5px 8px;
+    background: var(--Orange_web);
+    color: var(--Chocolate_cosmos);
+    font-weight: bold;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.report-downloads button:hover { background: var(--Princeton_orange); }
+
+@media (max-width: 600px) {
+    .report-results { padding: 15px 10px; margin: 15px 8px 40px 8px; }
+    .report-downloads button { width: 100%; margin: 5px 0; box-sizing: border-box; }
+}

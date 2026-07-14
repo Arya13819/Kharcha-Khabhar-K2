@@ -688,6 +688,17 @@ class DashboardPDF(FPDF):
         self.cell(60, 10, f"Net Balance: Rs.{balance:.2f}", 1, 1, "C", fill=True)
         self.ln(10)
 
+    def category_section(self, cat_totals):
+        if not cat_totals:
+            return
+        self.set_font("Arial", "B", 12)
+        self.cell(0, 10, "Spending by Category", ln=True)
+        self.set_font("Arial", "", 10)
+        for cat, total in cat_totals.items():
+            self.cell(90, 8, str(cat), border=1)
+            self.cell(40, 8, f"Rs.{total:.2f}", border=1, ln=True)
+        self.ln(8)
+
     def table_section(self, data):
         headers = ["Date", "Payee", "Type", "Amount", "Mode", "Category", "Budget"]
         col_widths = [25, 30, 25, 25, 30, 30, 25]
@@ -764,6 +775,31 @@ def report():
         cursor.close()
         conn.close()
 
+        # Nothing in this period: show a message instead of an empty file
+        if not data:
+            return render_template("report.html", no_data=True,
+                                   start=start_date, end=end_date)
+
+        if action == "preview":
+            total_expense = sum(float(x["amount"]) for x in data
+                                if x["transaction_type"] == "Expense")
+            total_income = sum(float(x["amount"]) for x in data
+                               if x["transaction_type"] == "Income")
+            cat_totals = {}
+            for x in data:
+                if x["transaction_type"] == "Expense":
+                    cat_totals[x["category"]] = cat_totals.get(x["category"], 0) + float(x["amount"])
+            cat_totals = dict(sorted(cat_totals.items(), key=lambda kv: -kv[1]))
+            return render_template(
+                "report.html",
+                results=data,
+                income=total_income,
+                expense=total_expense,
+                net=total_income - total_expense,
+                cat_totals=cat_totals,
+                start=start_date, end=end_date,
+            )
+
         if action == "csv":
             output = io.StringIO()
             writer = csv.writer(output)
@@ -786,7 +822,7 @@ def report():
             return send_file(
                 io.BytesIO(output.getvalue().encode("utf-8")),
                 mimetype="text/csv",
-                download_name="expense_report.csv",
+                download_name=f"K2_report_{start_date}_to_{end_date}.csv",
                 as_attachment=True,
             )
 
@@ -797,9 +833,16 @@ def report():
                                if x["transaction_type"] == "Income")
             net_balance = total_income - total_expense
 
+            cat_totals = {}
+            for x in data:
+                if x["transaction_type"] == "Expense":
+                    cat_totals[x["category"]] = cat_totals.get(x["category"], 0) + float(x["amount"])
+            cat_totals = dict(sorted(cat_totals.items(), key=lambda kv: -kv[1]))
+
             pdf = DashboardPDF()
             pdf.add_page()
             pdf.summary_section(total_income, total_expense, net_balance)
+            pdf.category_section(cat_totals)
             pdf.table_section(data)
 
             pdf_output = pdf.output(dest="S")
@@ -809,7 +852,7 @@ def report():
             return send_file(
                 io.BytesIO(pdf_bytes),
                 mimetype="application/pdf",
-                download_name="financial_dashboard_report.pdf",
+                download_name=f"K2_report_{start_date}_to_{end_date}.pdf",
                 as_attachment=True,
             )
 
