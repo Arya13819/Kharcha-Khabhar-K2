@@ -1310,3 +1310,82 @@ a.tab.active {
     .report-results { padding: 15px 10px; margin: 15px 8px 40px 8px; }
     .report-downloads button { width: 100%; margin: 5px 0; box-sizing: border-box; }
 }
+
+
+/* ================= Dark mode (v2.1) ================= */
+#theme-toggle {
+    background: none;
+    border: 2px solid var(--Orange_web);
+    border-radius: 50%;
+    font-size: 16px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    margin-right: 12px;
+    padding: 0;
+    line-height: 1;
+}
+
+#theme-toggle:hover { background: rgba(255, 186, 8, 0.15); }
+
+/* --- Page base --- */
+body.dark { background: #121212; color: #e4e4e4; }
+
+/* --- Cards & containers that are white in light mode --- */
+body.dark .summary-card,
+body.dark .chart-box,
+body.dark .recurring-list-box,
+body.dark .budget-card,
+body.dark .budget-set-form,
+body.dark .report-results,
+body.dark .reminder-card {
+    background: #1e1e1e;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+body.dark .summary-card h2,
+body.dark .budget-head,
+body.dark .reminder-info { color: #e4e4e4; }
+
+body.dark .summary-card p,
+body.dark .budget-msg,
+body.dark .result-count,
+body.dark .page-info,
+body.dark .recurring-sub { color: #aaa; }
+
+body.dark .chart-box h3,
+body.dark .recurring-list-box h2,
+body.dark .report-results h2,
+body.dark .report-results h3,
+body.dark .dashboard h1,
+body.dark .recurring-page h1,
+body.dark .report h1,
+body.dark .info h1 { color: var(--Princeton_orange); }
+
+body.dark .reminder-card { background: #2a2312; }
+
+body.dark .budget-track { background: #333; }
+
+/* --- Tables --- */
+body.dark table { background: #1e1e1e; color: #e4e4e4; }
+body.dark td { color: #e4e4e4; border-color: #333; }
+body.dark tr:nth-child(even) { background: #242424; }
+body.dark tr:hover { background: #2e2e2e; }
+
+/* --- Inputs & filter bar --- */
+body.dark .filter-bar input[type="text"],
+body.dark .filter-bar select,
+body.dark .budget-set-form input[type="number"],
+body.dark .report-form select,
+body.dark .report-form input[type="date"] {
+    background: #2a2a2a;
+    color: #e4e4e4;
+    border-color: var(--Princeton_orange);
+}
+
+body.dark .budget-set-form label { color: #e4e4e4; }
+body.dark .no-results, body.dark .no-rules, body.dark .chart-empty { color: #999; }
+
+/* --- Info section on home --- */
+body.dark .info { background: #121212; }
+body.dark .info p { color: #ccc; }

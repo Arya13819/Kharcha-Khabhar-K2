@@ -214,3 +214,81 @@ if (checkBalanceBtn) {
         window.location.href = "/balance";
     });
 }
+
+// ================= Keyword auto-categorization (v2.0) =================
+// Type "zomato" as payee -> category becomes Food automatically.
+const CATEGORY_KEYWORDS = {
+    "Food": ["zomato", "swiggy", "dominos", "pizza", "restaurant", "cafe", "chai", "kfc", "mcdonald", "burger", "dhaba", "biryani"],
+    "Groceries": ["bigbasket", "blinkit", "zepto", "dmart", "grocery", "kirana", "sabzi", "ration", "instamart"],
+    "Transport": ["uber", "ola", "rapido", "petrol", "diesel", "fuel", "metro", "bus", "train", "irctc", "cab", "auto", "toll"],
+    "Shopping": ["amazon", "flipkart", "myntra", "ajio", "meesho", "mall", "croma"],
+    "Bills & Recharge": ["recharge", "jio", "airtel", "vodafone", "bsnl", "electricity", "bijli", "wifi", "broadband", "dth", "cylinder", "bill", "postpaid", "prepaid"],
+    "Rent/Housing": ["rent", "kiraya", "maintenance", "hostel", "landlord", "society"],
+    "Health": ["doctor", "hospital", "medicine", "pharmacy", "apollo", "medical", "clinic", "gym", "dawai", "1mg", "pharmeasy", "lab"],
+    "Entertainment": ["netflix", "spotify", "hotstar", "prime video", "movie", "pvr", "inox", "bookmyshow", "game", "concert"],
+    "Education": ["fees", "course", "udemy", "coursera", "tuition", "coaching", "exam", "college", "school"],
+    "Cosmetics": ["nykaa", "salon", "cosmetic", "makeup", "shampoo", "parlour"]
+};
+
+function suggestCategory(payee) {
+    if (!payee) return null;
+    const p = payee.toLowerCase();
+    for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
+        for (const kw of keywords) {
+            if (p.includes(kw)) return category;
+        }
+    }
+    return null;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Wire every form that has both a payee input and a category select
+    document.querySelectorAll("form").forEach(function (form) {
+        const payeeInput = form.querySelector('input[name="payee"]');
+        const categorySelect = form.querySelector('select[name="category"]');
+        if (!payeeInput || !categorySelect) return;
+
+        payeeInput.addEventListener("input", function () {
+            const suggestion = suggestCategory(payeeInput.value);
+            if (!suggestion) return;
+
+            // Only auto-fill if the user hasn't picked a category manually
+            const untouched = categorySelect.value === "" ||
+                              categorySelect.dataset.autofilled === "true";
+            if (untouched && categorySelect.value !== suggestion) {
+                categorySelect.value = suggestion;
+                categorySelect.dataset.autofilled = "true";
+                categorySelect.style.borderColor = "#F48C06";
+                setTimeout(function () { categorySelect.style.borderColor = ""; }, 800);
+            }
+        });
+
+        // Manual choice wins: stop auto-filling after the user touches the select
+        categorySelect.addEventListener("change", function () {
+            categorySelect.dataset.autofilled = "false";
+        });
+    });
+});
+
+// ================= Dark mode (v2.1) =================
+document.addEventListener("DOMContentLoaded", function () {
+    const navRight = document.querySelector(".nav-right");
+    if (!navRight) return; // login/register pages keep their own look
+
+    // Apply saved preference
+    if (localStorage.getItem("k2-theme") === "dark") {
+        document.body.classList.add("dark");
+    }
+
+    const btn = document.createElement("button");
+    btn.id = "theme-toggle";
+    btn.type = "button";
+    btn.title = "Toggle dark mode";
+    btn.textContent = document.body.classList.contains("dark") ? "\u2600\uFE0F" : "\uD83C\uDF19";
+    btn.addEventListener("click", function () {
+        const dark = document.body.classList.toggle("dark");
+        localStorage.setItem("k2-theme", dark ? "dark" : "light");
+        btn.textContent = dark ? "\u2600\uFE0F" : "\uD83C\uDF19";
+    });
+    navRight.insertBefore(btn, navRight.firstChild);
+});
