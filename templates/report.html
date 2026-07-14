@@ -31,26 +31,47 @@
     <div class="report">
         <h1>Report</h1>
         <form action="/report" method="post" class="report-form">
-            <label for="report-type">Report Type:</label>
-            <select name="t" id="report-type">
-                <option>Select option</option>
-                <option value="m">Monthly</option>
-                <option value="w">Weekly</option>
-                <option value="c">Custom Date Range</option> 
+            <label for="report-range">Report Period:</label>
+            <select name="range" id="report-range" required>
+                <option value="this_week">This Week</option>
+                <option value="this_month" selected>This Month</option>
+                <option value="last_month">Last Month</option>
+                <option value="last_3_months">Last 3 Months</option>
+                <option value="this_year">This Year</option>
+                <option value="custom">Custom Date Range</option>
             </select>
             <br>
 
-            <label>Select Date Range:</label>
-            <label for="start-date">Start From:</label>
-            <input type="date" id="start-date" name="start-date">
+            <div id="custom-range" style="display: none;">
+                <label for="start-date">Start From:</label>
+                <input type="date" id="start-date" name="start-date">
 
-            <label for="end-date">End From:</label>
-            <input type="date" id="end-date" name="end-date">
+                <label for="end-date">End To:</label>
+                <input type="date" id="end-date" name="end-date">
+            </div>
 
             <label for="gen">Generate Report:</label>
             <button type="submit" name="action" value="csv">CSV</button>
             <button type="submit" name="action" value="pdf" id="pdf">PDF</button>
         </form>
+
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const rangeSelect = document.getElementById("report-range");
+            const customBox = document.getElementById("custom-range");
+            const startInput = document.getElementById("start-date");
+            const endInput = document.getElementById("end-date");
+
+            function toggleCustom() {
+                const isCustom = rangeSelect.value === "custom";
+                customBox.style.display = isCustom ? "block" : "none";
+                startInput.required = isCustom;
+                endInput.required = isCustom;
+            }
+            rangeSelect.addEventListener("change", toggleCustom);
+            toggleCustom();
+        });
+        </script>
 </body>
 <script src="{{ url_for('static', filename='app.js') }}"></script>
 </html>

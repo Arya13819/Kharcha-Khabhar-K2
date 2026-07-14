@@ -9,7 +9,7 @@ Runs on PostgreSQL in the cloud (Render) and MySQL locally.
 import os
 import csv
 import io
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 from flask import (
     Flask, render_template, request, redirect, session, send_file,
@@ -716,10 +716,37 @@ def report():
         return redirect(url_for("home", auth="required"))
 
     if request.method == "POST":
-        start_date = request.form.get("start-date")
-        end_date = request.form.get("end-date")
         action = request.form.get("action")  # 'csv' or 'pdf'
         username = session["user"]
+        rng = request.form.get("range", "this_month")
+        today = date.today()
+
+        if rng == "custom":
+            start_date = request.form.get("start-date")
+            end_date = request.form.get("end-date")
+            if not start_date or not end_date:
+                return redirect(url_for("report", report="failed"))
+        elif rng == "this_week":
+            start_date = (today - timedelta(days=today.weekday())).isoformat()
+            end_date = today.isoformat()
+        elif rng == "last_month":
+            last_prev = today.replace(day=1) - timedelta(days=1)
+            start_date = last_prev.replace(day=1).isoformat()
+            end_date = last_prev.isoformat()
+        elif rng == "last_3_months":
+            month = today.month - 2
+            year = today.year
+            if month < 1:
+                month += 12
+                year -= 1
+            start_date = date(year, month, 1).isoformat()
+            end_date = today.isoformat()
+        elif rng == "this_year":
+            start_date = today.replace(month=1, day=1).isoformat()
+            end_date = today.isoformat()
+        else:  # this_month (default)
+            start_date = today.replace(day=1).isoformat()
+            end_date = today.isoformat()
 
         conn = get_db_connection()
         cursor = get_cursor(conn)

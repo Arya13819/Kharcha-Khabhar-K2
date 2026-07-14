@@ -147,6 +147,11 @@ document.addEventListener("DOMContentLoaded", function () {
         removeQueryParam("submitted");
     }
 
+    if (params.has("report") && params.get("report") === "failed") {
+        alert("Please pick both start and end dates for a custom report.");
+        removeQueryParam("report");
+    }
+
     if (params.has("budget_saved")) {
         if (params.get("budget_saved") === "true") {
             alert("Monthly budget saved!");
