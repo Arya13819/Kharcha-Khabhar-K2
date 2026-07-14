@@ -59,6 +59,36 @@ def login_required():
     return "user" not in session
 
 
+def page_count(total, per_page):
+    """Number of pages needed for `total` rows (always at least 1)."""
+    return max(1, -(-total // per_page))
+
+
+def compute_report_range(rng, today, start=None, end=None):
+    """Turn a report period preset into (start_iso, end_iso).
+    Returns None if a custom range is missing its dates."""
+    if rng == "custom":
+        if not start or not end:
+            return None
+        return start, end
+    if rng == "this_week":
+        return (today - timedelta(days=today.weekday())).isoformat(), today.isoformat()
+    if rng == "last_month":
+        last_prev = today.replace(day=1) - timedelta(days=1)
+        return last_prev.replace(day=1).isoformat(), last_prev.isoformat()
+    if rng == "last_3_months":
+        month = today.month - 2
+        year = today.year
+        if month < 1:
+            month += 12
+            year -= 1
+        return date(year, month, 1).isoformat(), today.isoformat()
+    if rng == "this_year":
+        return today.replace(month=1, day=1).isoformat(), today.isoformat()
+    # default: this_month
+    return today.replace(day=1).isoformat(), today.isoformat()
+
+
 def get_month_budget(conn, username, month_str):
     """Budget for the given 'YYYY-MM' from the budgets table.
     Falls back to the legacy per-transaction budget for older accounts."""
@@ -396,7 +426,7 @@ def history():
         tuple(params),
     )
     total = int(cursor.fetchone()["cnt"])
-    total_pages = max(1, -(-total // PER_PAGE))  # ceil division
+    total_pages = page_count(total, PER_PAGE)
     page = min(page, total_pages)
 
     cursor.execute(
@@ -730,34 +760,13 @@ def report():
         action = request.form.get("action")  # 'csv' or 'pdf'
         username = session["user"]
         rng = request.form.get("range", "this_month")
-        today = date.today()
-
-        if rng == "custom":
-            start_date = request.form.get("start-date")
-            end_date = request.form.get("end-date")
-            if not start_date or not end_date:
-                return redirect(url_for("report", report="failed"))
-        elif rng == "this_week":
-            start_date = (today - timedelta(days=today.weekday())).isoformat()
-            end_date = today.isoformat()
-        elif rng == "last_month":
-            last_prev = today.replace(day=1) - timedelta(days=1)
-            start_date = last_prev.replace(day=1).isoformat()
-            end_date = last_prev.isoformat()
-        elif rng == "last_3_months":
-            month = today.month - 2
-            year = today.year
-            if month < 1:
-                month += 12
-                year -= 1
-            start_date = date(year, month, 1).isoformat()
-            end_date = today.isoformat()
-        elif rng == "this_year":
-            start_date = today.replace(month=1, day=1).isoformat()
-            end_date = today.isoformat()
-        else:  # this_month (default)
-            start_date = today.replace(day=1).isoformat()
-            end_date = today.isoformat()
+        result = compute_report_range(
+            rng, date.today(),
+            request.form.get("start-date"), request.form.get("end-date"),
+        )
+        if result is None:
+            return redirect(url_for("report", report="failed"))
+        start_date, end_date = result
 
         conn = get_db_connection()
         cursor = get_cursor(conn)

@@ -54,6 +54,21 @@ A full-stack personal finance web app to track income, expenses, and budgets. Lo
 3. Add environment variables: `DATABASE_URL`, `SECRET_KEY`, `SETUP_KEY`.
 4. After the first deploy, visit `/setup-db?key=YOUR_SETUP_KEY` once to create the tables.
 
+## Testing
+
+The project ships with an automated pytest suite (34 tests) covering:
+
+- **Auth logic** — bcrypt verification and the legacy plaintext-to-hash upgrade path
+- **Route protection** — every private page and API rejects logged-out users
+- **Date arithmetic** — recurring-transaction scheduling across month-ends and leap years, report period presets across year boundaries
+- **Pagination math** — page counts at exact boundaries
+
+Run them with:
+
+```bash
+pytest
+```
+
 ## Security Notes
 
 - No credentials are committed to this repository — all secrets come from environment variables
