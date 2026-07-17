@@ -1389,3 +1389,7 @@ body.dark .no-results, body.dark .no-rules, body.dark .chart-empty { color: #999
 /* --- Info section on home --- */
 body.dark .info { background: #121212; }
 body.dark .info p { color: #ccc; }
+
+body.dark .generate-btn { background: var(--Orange_web); color: var(--Chocolate_cosmos); }
+body.dark .generate-btn:hover { background: var(--Princeton_orange); }
+body.dark .report-form label { color: #e4e4e4; }
