@@ -7,10 +7,15 @@ A full-stack personal finance web app to track income, expenses, and budgets. Lo
 ## Screenshots
 
 ### Dashboard
+
 <img width="1363" height="566" alt="dashboard" src="https://github.com/user-attachments/assets/8c91e423-6165-4382-aee1-42a1285e6d91" />
+
 ### Transaction History
+
 <img width="1354" height="601" alt="history" src="https://github.com/user-attachments/assets/752de8bc-fb02-406a-b60e-bef680102067" />
+
 ### Report Preview
+
 <img width="1361" height="636" alt="report" src="https://github.com/user-attachments/assets/b6830aa5-53f6-4f5b-85db-195ca0c0ab88" />
 
 ## Features
